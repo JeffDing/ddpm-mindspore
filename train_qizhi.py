@@ -24,7 +24,7 @@ def parse_args():
                         default="",
                         help='training data file path')
     
-    parser.add_argument('--data_dir
+    parser.add_argument('--data_dir',
                         type=str,
                         default="",
                         help='training data file path')
@@ -114,7 +114,7 @@ def train_ddpm():
 
 if __name__ == '__main__':
     args_opt = parse_args()
-    if args.use_qizhi:
+    if args_opt.use_qizhi:
         import moxing as mox
         ### Copy single dataset from obs to training image###
         def ObsToEnv(obs_data_url, data_dir):
@@ -145,10 +145,10 @@ if __name__ == '__main__':
             device_num = int(os.getenv('RANK_SIZE'))
             if device_num == 1:
                 ObsToEnv(obs_data_url,data_dir)
-                context.set_context(mode=context.GRAPH_MODE,device_target=args.device_target)
+                context.set_context(mode=context.GRAPH_MODE,device_target=args_opt.device_target)
             if device_num > 1:
                 # set device_id and init for multi-card training
-                context.set_context(mode=context.GRAPH_MODE, device_target=args.device_target, device_id=int(os.getenv('ASCEND_DEVICE_ID')))
+                context.set_context(mode=context.GRAPH_MODE, device_target=args_opt.device_target, device_id=int(os.getenv('ASCEND_DEVICE_ID')))
                 context.reset_auto_parallel_context()
                 context.set_auto_parallel_context(device_num = device_num, parallel_mode=ParallelMode.DATA_PARALLEL, gradients_mean=True, parameter_broadcast=True)
                 init()
@@ -178,9 +178,9 @@ if __name__ == '__main__':
         if not os.path.exists(train_dir):
             os.makedirs(train_dir)
         ###Initialize and copy data to training image
-        DownloadFromQizhi(args.data_url, data_dir)
+        DownloadFromQizhi(args_opt.data_url, data_dir)
 
-    if args.use_zhisuan:
+    if args_opt.use_zhisuan:
         import moxing as mox
         ### Copy multiple datasets from obs to training image and unzip###  
         def C2netMultiObsToEnv(multi_data_url, data_dir):
@@ -225,10 +225,10 @@ if __name__ == '__main__':
             device_num = int(os.getenv('RANK_SIZE'))
             if device_num == 1:
                 C2netMultiObsToEnv(multi_data_url,data_dir)
-                context.set_context(mode=context.GRAPH_MODE,device_target=args.device_target)
+                context.set_context(mode=context.GRAPH_MODE,device_target=args_opt.device_target)
             if device_num > 1:
                 # set device_id and init for multi-card training
-                context.set_context(mode=context.GRAPH_MODE, device_target=args.device_target, device_id=int(os.getenv('ASCEND_DEVICE_ID')))
+                context.set_context(mode=context.GRAPH_MODE, device_target=args_opt.device_target, device_id=int(os.getenv('ASCEND_DEVICE_ID')))
                 context.reset_auto_parallel_context()
                 context.set_auto_parallel_context(device_num = device_num, parallel_mode=ParallelMode.DATA_PARALLEL, gradients_mean=True, parameter_broadcast=True)
                 init()
@@ -258,5 +258,5 @@ if __name__ == '__main__':
         if not os.path.exists(train_dir):
             os.makedirs(train_dir)
         ###Initialize and copy data to training image
-        DownloadFromQizhi(args.multi_data_url, data_dir)
+        DownloadFromQizhi(args_opt.multi_data_url, data_dir)
     train_ddpm()
