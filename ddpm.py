@@ -448,7 +448,7 @@ class Unet(nn.Cell):
         dim,
         init_dim=None,
         out_dim=None,
-        dim_mults=(1, 2, 4, 8),
+        dim_mults=(1, 2, 4),
         channels=3,
         self_condition=False,
         resnet_block_groups=8,
