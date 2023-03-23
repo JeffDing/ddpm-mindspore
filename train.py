@@ -49,9 +49,9 @@ def parse_args():
 
 def train_ddpm():
     epoch = args_opt.epochs
-    data_dir = '../dataset/dog/'
-    train_dir = './output'
-    ckpt_url = './ckpt/checkpoint.ckpt'
+    data_dir = args_opt.data_url
+    train_dir = args_opt.train_url
+    ckpt_url = args_opt.pretrain_path
     try:
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
