@@ -8,8 +8,7 @@ from PIL import Image
 import numpy as np
 
 import mindspore
-import mindspore.dataset.vision.c_transforms as transformer
-import mindspore.dataset.vision.py_transforms as py_transformer
+import mindspore.dataset.vision as transformer
 import mindspore.common.dtype as ms_type
 
 from mindspore import ops, nn, ms_function, save_checkpoint, load_checkpoint,\
@@ -18,7 +17,7 @@ from mindspore import ops, nn, ms_function, save_checkpoint, load_checkpoint,\
 from mindspore.communication import init
 from mindspore.dataset import VisionBaseDataset, GeneratorDataset, MindDataset, ImageFolderDataset
 from mindspore.ops import GradOperation
-# from mindspore.ops.operations.image_ops import ResizeBilinearV2, ResizeLinear1D
+from mindspore.ops.operations.image_ops import ResizeBilinearV2, ResizeLinear1D
 from mindspore.nn import Dense
 from mindspore.common.initializer import initializer, HeUniform, Uniform, \
     Normal, _calculate_fan_in_and_fan_out
@@ -120,13 +119,13 @@ class UpSample(nn.Cell):
         if self.mode == 'nearest':
             interpolate = ops.ResizeNearestNeighbor(sizes, self.align_corners)
             return interpolate(inputs)
-        # if self.mode == 'linear':
-        #     interpolate = ResizeLinear1D('align_corners' if self.align_corners else 'half_pixel')
-        #     return interpolate(inputs, sizes)
-        # if self.mode == 'bilinear':
-        #     interpolate = ResizeBilinearV2(self.align_corners,
-        #                                    True if not self.align_corners else False)
-        #     return interpolate(inputs, sizes)
+        if self.mode == 'linear':
+            interpolate = ResizeLinear1D('align_corners' if self.align_corners else 'half_pixel')
+            return interpolate(inputs, sizes)
+        if self.mode == 'bilinear':
+            interpolate = ResizeBilinearV2(self.align_corners,
+                                           True if not self.align_corners else False)
+            return interpolate(inputs, sizes)
 
         return inputs
 
@@ -160,10 +159,8 @@ class Conv2d(nn.Conv2d):
 def up_sample(dim, dim_out=None):
     return nn.SequentialCell(
         UpSample(scale_factor=2, mode='nearest'),
-        # Conv2d(dim, default(dim_out, dim), 3, padding=1, pad_mode='pad'),
         Conv2d(dim, default(dim_out, dim), 3, padding=1, pad_mode='pad')
     )
-    # return Conv2d(dim, default(dim_out*2, dim*2), 3, padding=1, pad_mode='pad')
 
 
 def down_sample(dim, dim_out=None):
@@ -214,11 +211,10 @@ class SinusoidalPosEmb(nn.Cell):
         emb = math.log(10000) / (half_dim - 1)
         emb = np.exp(np.arange(half_dim) * - emb)
         self.emb = Tensor(emb, mindspore.float32)
-        self.Concat = ops.Concat(-1)
 
     def construct(self, x):
         emb = x[:, None] * self.emb[None, :]
-        emb = self.Concat((ops.sin(emb), ops.cos(emb)))
+        emb = ops.concat((ops.sin(emb), ops.cos(emb)), axis=-1)
         return emb
 
 
@@ -230,13 +226,12 @@ class RandomOrLearnedSinusoidalPosEmb(nn.Cell):
         half_dim = dim // 2
         self.weights = Parameter(initializer(Normal(1.0), (half_dim,)), name='weights',
                                  requires_grad=not is_random)
-        self.Concat = ops.Concat(-1)
 
     def construct(self, x):
         x = x.expand_dims(1)
         freqs = x * self.weights.expand_dims(0) * 2 * Tensor(math.pi, mindspore.float32)
-        fouriered = self.Concat((ops.sin(freqs), ops.cos(freqs)))
-        fouriered = self.Concat((x, fouriered))
+        fouriered = ops.concat((ops.sin(freqs), ops.cos(freqs)), axis=-1)
+        fouriered = ops.concat((x, fouriered), axis=-1)
         return fouriered
 
 
@@ -272,14 +267,13 @@ class ResnetBlock(nn.Cell):
         self.block1 = Block(dim, dim_out, groups=groups)
         self.block2 = Block(dim_out, dim_out, groups=groups)
         self.res_conv = Conv2d(dim, dim_out, 1) if dim != dim_out else ops.Identity()
-        self.split = ops.Split(axis=1, output_num=2)
 
     def construct(self, x, time_emb=None):
         scale_shift = None
         if exists(self.mlp) and exists(time_emb):
             time_emb = self.mlp(time_emb)
             time_emb = time_emb.expand_dims(-1).expand_dims(-1)
-            scale_shift = self.split(time_emb)
+            scale_shift = time_emb.split(axis=1, output_num=2)
         h = self.block1(x, scale_shift=scale_shift)
         h = self.block2(h)
         return h + self.res_conv(x)
@@ -301,17 +295,14 @@ class LinearAttention(nn.Cell):
         self.map = ops.Map()
         self.partial = ops.Partial()
         self.bmm = ops.BatchMatMul()
-        self.split = ops.Split(axis=1, output_num=3)
-        self.softmax1 = ops.Softmax(-1)
-        self.softmax2 = ops.Softmax(-2)
 
     def construct(self, x):
         b, c, h, w = x.shape
-        qkv = self.split(self.to_qkv(x))
+        qkv = self.to_qkv(x).split(1, 3)
         q, k, v = self.map(self.partial(rearrange, self.heads), qkv)
 
-        q = self.softmax2(q)
-        k = self.softmax1(k)
+        q = ops.softmax(q, -2)
+        k = ops.softmax(k, -1)
 
         q = q * self.scale
         v = v / (h * w)
@@ -335,16 +326,14 @@ class Attention(nn.Cell):
         self.map = ops.Map()
         self.partial = ops.Partial()
         self.bmm = ops.BatchMatMul()
-        self.split = ops.Split(axis=1, output_num=3)
-        self.softmax = ops.Softmax(-1)
 
     def construct(self, x):
         b, c, h, w = x.shape
-        qkv = self.split(self.to_qkv(x))
+        qkv = self.to_qkv(x).split(1, 3)
         q, k, v = self.map(self.partial(rearrange, self.heads), qkv)
         q = q * self.scale
         sim = self.bmm(q.swapaxes(2, 3), k)
-        attn = self.softmax(sim)
+        attn = ops.softmax(sim, -1)
         out = self.bmm(attn, v.swapaxes(2, 3))
         out = out.swapaxes(-1, -2).reshape((b, -1, h, w))
         return self.to_out(out)
@@ -410,12 +399,11 @@ def create_dataset(folder, image_size, extensions=None, augment_horizontal_flip=
 
     transformers = [
         # CenterCrop(image_size*2),
-
+        transformer.RandomHorizontalFlip() if augment_horizontal_flip else nn.Identity(),
         transformer.Resize([image_size, image_size], transformer.Inter.BILINEAR),
-        py_transformer.ToTensor()
+        transformer.ToTensor()
     ]
-    if augment_horizontal_flip:
-        transformers.append(transformer.RandomHorizontalFlip())
+
     dataset = dataset.project('image')
     dataset = dataset.map(transformers, 'image')
     if shuffle:
@@ -544,13 +532,12 @@ class Unet(nn.Cell):
 
         self.final_res_block = block_klass(dim * 2, dim, time_emb_dim=time_dim)
         self.final_conv = Conv2d(dim, self.out_dim, 1, pad_mode='valid', has_bias=True)
-        self.Concat = ops.Concat(axis=1)
 
     def construct(self, x, time, x_self_cond):
         if self.self_condition:
             if x_self_cond is None:
                 x_self_cond = ops.zeros_like(x)
-            x = self.Concat((x_self_cond, x))
+            x = ops.concat((x_self_cond, x), 1)
         x = self.init_conv(x)
         r = x.copy()
         t = self.time_mlp(time)
@@ -572,18 +559,18 @@ class Unet(nn.Cell):
 
         len_h = len(h) - 1
         for block1, block2, attn, upsample in self.ups:
-            x = self.Concat((x, h[len_h]))
+            x = ops.concat((x, h[len_h]), 1)
             len_h -= 1
             x = block1(x, t)
 
-            x = self.Concat((x, h[len_h]))
+            x = ops.concat((x, h[len_h]), 1)
             len_h -= 1
             x = block2(x, t)
             x = attn(x)
 
             x = upsample(x)
 
-        x = self.Concat((x, r))
+        x = ops.concat((x, r), 1)
 
         x = self.final_res_block(x, t)
         return self.final_conv(x)
@@ -760,7 +747,7 @@ class GaussianDiffusion(nn.Cell):
                                                  x_t.shape)
         return posterior_mean, posterior_variance, posterior_log_variance_clipped
 
-    # @ms_function
+    @ms_function
     def model_predictions(self, x, t, x_self_cond=None, clip_x_start=False):
         model_output = self.model(x, t, x_self_cond)
 
@@ -800,7 +787,7 @@ class GaussianDiffusion(nn.Cell):
             x_start=x_start, x_t=x, t=t)
         return model_mean, post_variance, post_log_variance, x_start
 
-    # @ms_function
+    @ms_function
     def p_sample(self, x, t, x_self_cond=None, clip_denoise=True):
         batched_times = ops.ones((x.shape[0],), mindspore.int32) * t
         model_mean, _, model_log_variance, x_start = self.p_mean_variance(
@@ -957,7 +944,6 @@ class Trainer:
         device_id = int(os.getenv('DEVICE_ID', "0"))
         mindspore.set_context(device_id=device_id)
         backend = mindspore.get_context('device_target')
-        context.set_context(mode=context.PYNATIVE_MODE)
         if use_static and akg and backend != 'Ascend':
             mindspore.set_context(enable_graph_kernel=True, graph_kernel_flags="--opt_level=1")
 
@@ -971,7 +957,7 @@ class Trainer:
         self.ema = EMA(diffusion_model, beta=ema_decay, update_every=ema_update_every)
 
         self.results_folder = Path(results_folder)
-        # self.results_folder.mkdir(exist_ok=True)
+        self.results_folder.mkdir(exist_ok=True)
 
         square_info = 'number of samples must have an integer square root'
         assert has_int_square_root(num_samples), square_info
@@ -1050,15 +1036,14 @@ class Trainer:
 
         grad_fn = grad_cell(forward_fn, self.opt.parameters)
 
-        # @ms_function()
+        @ms_function()
         def train_step(data, time_vec):
             current_loss = forward_fn(data, time_vec)
             grads = grad_fn(data, time_vec)
-            # if all_finite(grads):
-            current_loss = ops.depend(current_loss, accumulator(grads))
+            if all_finite(grads):
+                current_loss = ops.depend(current_loss, accumulator(grads))
 
             return current_loss
-
         data_iterator = self.dataset.create_tuple_iterator()
 
         print('training start')
