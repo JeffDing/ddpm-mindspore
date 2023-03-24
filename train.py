@@ -34,6 +34,8 @@ parser.add_argument('--gradient_accumulate_every', default=2, type=int,
                     metavar='N', help='')
 parser.add_argument('--ckpt_url', type=str, default=None,
                     help='load ckpt file path')
+parser.add_argument('--pretrain_url', type=str, default=None,
+                    help='load ckpt file path')
 parser.add_argument('--use_qizhi', type=bool, default=False,
                     help='use qizhi')
 parser.add_argument('--use_zhisuan', type=bool, default=False,
@@ -222,8 +224,8 @@ trainer = Trainer(
     train_url=train_dir
 )
 
-if args.ckpt_url is not None:
-    trainer.load(args.ckpt_url)
+if args.pretrain_url is not None:
+    trainer.load(args.pretrain_url)
     print('load ckpt successfully')
 
 trainer.train()
