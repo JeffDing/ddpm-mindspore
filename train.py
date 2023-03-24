@@ -108,6 +108,7 @@ if args.use_qizhi:
 
 if args.use_zhisuan:
     import moxing as mox
+    import json
     ### Copy multiple datasets from obs to training image and unzip###  
     def C2netMultiObsToEnv(multi_data_url, data_dir):
         #--multi_data_url is json data, need to do json parsing for multi_data_url
