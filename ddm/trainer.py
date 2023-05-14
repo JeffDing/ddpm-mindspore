@@ -45,7 +45,7 @@ class Trainer(object):
         adam_betas = (0.9, 0.99),
         save_and_sample_every = 1000,
         #num_samples = 25,
-        num_samples = 4,
+        num_samples = 16,
         results_folder = './results',
         amp_level = 'O1',
         dynamic_loss_scale = False,
