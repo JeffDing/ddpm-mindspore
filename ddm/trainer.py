@@ -242,3 +242,15 @@ class Trainer(object):
                     break
 
         print('training complete')
+
+    def save_images(all_images_list, path):
+        if not os.path.exists(path):
+            os.mkdir(path)
+        for i, image in enumerate(all_images_list):
+            image = image[0]
+            image = image * 255 + 0.5
+            image = np.clip(image, 0, 255).astype(np.uint8)
+            image = image.transpose((1, 2, 0))
+            im = Image.fromarray(image)
+            save_path = os.path.join(path, f'{i}-img.png')
+            im.save(save_path)
