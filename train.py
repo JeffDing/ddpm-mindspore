@@ -40,6 +40,8 @@ parser.add_argument('--use_qizhi', type=bool, default=False,
                     help='use qizhi')
 parser.add_argument('--use_zhisuan', type=bool, default=False,
                     help='use zhisuan')
+parser.add_argument('--do_pretrain', type=bool, default=False,
+                    help='use zhisuan')
 args = parser.parse_args()
 
 if args.use_qizhi:
@@ -224,9 +226,9 @@ trainer = Trainer(
     train_url=train_dir
 )
 
-#if args.pretrain_url is not None:
-#    trainer.load(args.pretrain_url)
-#    print('load ckpt successfully')
+if args.do_pretrain:
+    trainer.load(args.pretrain_url)
+    print('load ckpt successfully')
 
 trainer.train()
 
