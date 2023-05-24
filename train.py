@@ -224,9 +224,9 @@ trainer = Trainer(
     train_url=train_dir
 )
 
-if args.pretrain_url is not None:
-    trainer.load(args.pretrain_url)
-    print('load ckpt successfully')
+#if args.pretrain_url is not None:
+#    trainer.load(args.pretrain_url)
+#    print('load ckpt successfully')
 
 trainer.train()
 
