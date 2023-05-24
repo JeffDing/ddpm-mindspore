@@ -227,7 +227,8 @@ trainer = Trainer(
 trainer.load(args.pretrain_url)
 print('load ckpt successfully')
 
-trainer.train()
+img_list = trainer.inference()
+ddpm.save_images(img_list, train_dir)
 
 if args.use_qizhi or args.use_zhisuan:
     UploadToQizhi(train_dir,args.train_url)
