@@ -141,6 +141,11 @@ class Trainer(object):
         # if exists(self.accelerator.scaler) and exists(data['scaler']):
         #     self.accelerator.scaler.load_state_dict(data['scaler'])
 
+    def inference(self):
+        batches = num_to_groups(self.num_samples, self.batch_size)
+        all_images_list = list(map(lambda n: self.ema.online_model.sample(batch_size=n), batches))
+        return all_images_list
+
     def train(self):
         model = self.model
         accumulator = self.accumulator
