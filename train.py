@@ -44,152 +44,35 @@ parser.add_argument('--do_pretrain', type=bool, default=False,
                     help='use zhisuan')
 args = parser.parse_args()
 
-if args.use_qizhi:
-    import moxing as mox
-    ### Copy single dataset from obs to training image###
-    def ObsToEnv(obs_data_url, data_dir):
-        try:     
-            mox.file.copy_parallel(obs_data_url, data_dir)
-            print("Successfully Download {} to {}".format(obs_data_url, data_dir))
-        except Exception as e:
-            print('moxing download {} to {} failed: '.format(obs_data_url, data_dir) + str(e))
-        #Set a cache file to determine whether the data has been copied to obs. 
-        #If this file exists during multi-card training, there is no need to copy the dataset multiple times.
-        f = open("/cache/download_input.txt", 'w')    
-        f.close()
-        try:
-            if os.path.exists("/cache/download_input.txt"):
-                print("download_input succeed")
-        except Exception as e:
-            print("download_input failed")
-        return 
-    ### Copy the output to obs###
-    def EnvToObs(train_dir, obs_train_url):
-        try:
-            mox.file.copy_parallel(train_dir, obs_train_url)
-            print("Successfully Upload {} to {}".format(train_dir,obs_train_url))
-        except Exception as e:
-            print('moxing upload {} to {} failed: '.format(train_dir,obs_train_url) + str(e))
-        return      
-    def DownloadFromQizhi(obs_data_url, data_dir):
-        device_num = int(os.getenv('RANK_SIZE'))
-        if device_num == 1:
-            ObsToEnv(obs_data_url,data_dir)
-            context.set_context(mode=context.GRAPH_MODE,device_target=args.device_target)
-        if device_num > 1:
-            # set device_id and init for multi-card training
-            context.set_context(mode=context.GRAPH_MODE, device_target=args.device_target, device_id=int(os.getenv('ASCEND_DEVICE_ID')))
-            context.reset_auto_parallel_context()
-            context.set_auto_parallel_context(device_num = device_num, parallel_mode=ParallelMode.DATA_PARALLEL, gradients_mean=True, parameter_broadcast=True)
-            init()
-            #Copying obs data does not need to be executed multiple times, just let the 0th card copy the data
-            local_rank=int(os.getenv('RANK_ID'))
-            if local_rank%8==0:
-                ObsToEnv(obs_data_url,data_dir)
-            #If the cache file does not exist, it means that the copy data has not been completed,
-            #and Wait for 0th card to finish copying data
-            while not os.path.exists("/cache/download_input.txt"):
-                time.sleep(1)  
-        return
-    def UploadToQizhi(train_dir, obs_train_url):
-        device_num = int(os.getenv('RANK_SIZE'))
-        local_rank=int(os.getenv('RANK_ID'))
-        if device_num == 1:
-            EnvToObs(train_dir, obs_train_url)
-        if device_num > 1:
-            if local_rank%8==0:
-                EnvToObs(train_dir, obs_train_url)
-        return
-    
+if use_qizhi:
+    from openi import openi_multidataset_to_env as DatasetToEnv  
+    from openi import pretrain_to_env as PretrainToEnv
+    from openi import env_to_openi as EnvToOpeni
     data_dir = '/cache/data/'  
     train_dir = '/cache/output/'
+    pretrain = '/cache/pretrain/'
     if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
+        os.makedirs(data_dir)      
     if not os.path.exists(train_dir):
         os.makedirs(train_dir)
-    ###Initialize and copy data to training image
-    DownloadFromQizhi(args.data_url, data_dir)
+    if not os.path.exists(pretrain_dir):
+        os.makedirs(pretrain_dir)
+    DatasetToEnv(args.multi_data_url,data_dir)
 
-if args.use_zhisuan:
-    import moxing as mox
-    import json
-    ### Copy multiple datasets from obs to training image and unzip###  
-    def C2netMultiObsToEnv(multi_data_url, data_dir):
-        #--multi_data_url is json data, need to do json parsing for multi_data_url
-        multi_data_json = json.loads(multi_data_url)  
-        for i in range(len(multi_data_json)):
-            zipfile_path = data_dir + "/" + multi_data_json[i]["dataset_name"]
-            try:
-                mox.file.copy(multi_data_json[i]["dataset_url"], zipfile_path) 
-                print("Successfully Download {} to {}".format(multi_data_json[i]["dataset_url"],zipfile_path))
-                #get filename and unzip the dataset
-                filename = os.path.splitext(multi_data_json[i]["dataset_name"])[0]
-                filePath = data_dir + "/" + filename
-                if not os.path.exists(filePath):
-                    os.makedirs(filePath)
-                os.system("unzip {} -d {}".format(zipfile_path, filePath))
-
-            except Exception as e:
-                print('moxing download {} to {} failed: '.format(
-                    multi_data_json[i]["dataset_url"], zipfile_path) + str(e))
-        #Set a cache file to determine whether the data has been copied to obs. 
-        #If this file exists during multi-card training, there is no need to copy the dataset multiple times.
-        f = open("/cache/download_input.txt", 'w')    
-        f.close()
-        try:
-            if os.path.exists("/cache/download_input.txt"):
-                print("download_input succeed")
-        except Exception as e:
-            print("download_input failed")
-        return 
-    ### Copy the output model to obs ###  
-    def EnvToObs(train_dir, obs_train_url):
-        try:
-            mox.file.copy_parallel(train_dir, obs_train_url)
-            print("Successfully Upload {} to {}".format(train_dir,
-                                                        obs_train_url))
-        except Exception as e:
-            print('moxing upload {} to {} failed: '.format(train_dir,
-                                                        obs_train_url) + str(e))
-        return                                                       
-    def DownloadFromQizhi(multi_data_url, data_dir):
-        device_num = int(os.getenv('RANK_SIZE'))
-        if device_num == 1:
-            C2netMultiObsToEnv(multi_data_url,data_dir)
-            context.set_context(mode=context.GRAPH_MODE,device_target=args.device_target)
-        if device_num > 1:
-            # set device_id and init for multi-card training
-            context.set_context(mode=context.GRAPH_MODE, device_target=args.device_target, device_id=int(os.getenv('ASCEND_DEVICE_ID')))
-            context.reset_auto_parallel_context()
-            context.set_auto_parallel_context(device_num = device_num, parallel_mode=ParallelMode.DATA_PARALLEL, gradients_mean=True, parameter_broadcast=True)
-            init()
-            #Copying obs data does not need to be executed multiple times, just let the 0th card copy the data
-            local_rank=int(os.getenv('RANK_ID'))
-            if local_rank%8==0:
-                C2netMultiObsToEnv(multi_data_url,data_dir)
-            #If the cache file does not exist, it means that the copy data has not been completed,
-            #and Wait for 0th card to finish copying data
-            while not os.path.exists("/cache/download_input.txt"):
-                time.sleep(1)  
-        return
-    def UploadToQizhi(train_dir, obs_train_url):
-        device_num = int(os.getenv('RANK_SIZE'))
-        local_rank=int(os.getenv('RANK_ID'))
-        if device_num == 1:
-            EnvToObs(train_dir, obs_train_url)
-        if device_num > 1:
-            if local_rank%8==0:
-                EnvToObs(train_dir, obs_train_url)
-        return
-    
+if use_zhisuan:
+    from openi import c2net_multidataset_to_env as DatasetToEnv  
+    from openi import pretrain_to_env as PretrainToEnv
+    from openi import env_to_openi as EnvToOpeni
     data_dir = '/cache/data/'  
     train_dir = '/cache/output/'
+    pretrain = '/cache/pretrain/'
     if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
+        os.makedirs(data_dir)      
     if not os.path.exists(train_dir):
         os.makedirs(train_dir)
-    ###Initialize and copy data to training image
-    DownloadFromQizhi(args.multi_data_url, data_dir)
+    if not os.path.exists(pretrain_dir):
+        os.makedirs(pretrain_dir)
+    DatasetToEnv(args.multi_data_url,data_dir)
 
 path = args.local_data_root
 
@@ -227,10 +110,11 @@ trainer = Trainer(
 )
 
 if args.do_pretrain:
-    trainer.load(args.pretrain_url)
+    PretrainToEnv(args.pretrain_url, pretrain_dir)
+    trainer.load(pretrain_dir)
     print('load ckpt successfully')
 
 trainer.train()
 
 if args.use_qizhi or args.use_zhisuan:
-    UploadToQizhi(train_dir,args.train_url)
+    EnvToOpeni(train_dir,args.train_url)
