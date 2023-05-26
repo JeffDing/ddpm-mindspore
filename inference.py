@@ -49,7 +49,7 @@ if args.use_qizhi:
     from openi import env_to_openi as EnvToOpeni
     data_dir = '/cache/data/'  
     train_dir = '/cache/output/'
-    pretrain = '/cache/pretrain/'
+    pretrain_dir = '/cache/pretrain/'
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)      
     if not os.path.exists(train_dir):
@@ -64,7 +64,7 @@ if args.use_zhisuan:
     from openi import env_to_openi as EnvToOpeni
     data_dir = '/cache/data/'  
     train_dir = '/cache/output/'
-    pretrain = '/cache/pretrain/'
+    pretrain_dir = '/cache/pretrain/'
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)      
     if not os.path.exists(train_dir):
