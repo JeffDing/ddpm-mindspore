@@ -44,7 +44,7 @@ parser.add_argument('--do_pretrain', type=bool, default=False,
                     help='use zhisuan')
 args = parser.parse_args()
 
-if use_qizhi:
+if args.use_qizhi:
     from openi import openi_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
     from openi import env_to_openi as EnvToOpeni
@@ -59,7 +59,7 @@ if use_qizhi:
         os.makedirs(pretrain_dir)
     DatasetToEnv(args.multi_data_url,data_dir)
 
-if use_zhisuan:
+if args.use_zhisuan:
     from openi import c2net_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
     from openi import env_to_openi as EnvToOpeni
