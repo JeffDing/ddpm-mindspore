@@ -1,6 +1,5 @@
 # Denoising Diffusion Probabilistic Model, in MindSpore
 
-<img src="./assets/denoising-diffusion.png" width="500px"></img>
 
 Implementation of [Denoising Diffusion Probabilistic Model](https://arxiv.org/abs/2006.11239) in MindSpore. The implementation refers to lucidrains's [denoising-diffusion-pytorch](https://github.com/lucidrains/denoising-diffusion-pytorch).
 
@@ -9,11 +8,6 @@ Implementation of [Denoising Diffusion Probabilistic Model](https://arxiv.org/ab
 原始代码仓链接：https://github.com/lvyufeng/denoising-diffusion-mindspore
 增加了通过超参适配启智的训练作业环境及非启智环境
 
-## Results
-
-Training 50k steps with EMA.
-
-<img src="./assets/sample-50000.png"></img>
 
 ## Install
 
