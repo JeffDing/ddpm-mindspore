@@ -128,6 +128,7 @@ class Trainer(object):
     def load(self, ckpt_file):
         param_dict = load_checkpoint(ckpt_file)
         load_param_into_net(self.model, param_dict)
+        print('load sucessfuly')
         
 #        data = load_checkpoint(str(self.results_folder + f'/model-{milestone}.ckpt'))
         
