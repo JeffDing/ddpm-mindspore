@@ -113,7 +113,7 @@ trainer.load(args.ckpt_url)
 print('load ckpt successfully')
 
 img_list = trainer.inference()
-print('inference finish! img_list= %s', %img_list)
+print('inference finish! img_list= %s', img_list)
 ddpm.save_images(img_list, train_dir)
 
 if args.use_qizhi or args.use_zhisuan:
