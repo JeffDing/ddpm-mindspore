@@ -108,8 +108,8 @@ trainer = Trainer(
     train_url=train_dir
 )
 
-PretrainToEnv(args.pretrain_url, pretrain_dir)
-trainer.load(pretrain_dir)
+PretrainToEnv(args.ckpt_url, pretrain_dir)
+trainer.load(args.pretrain_dir)
 print('load ckpt successfully')
 
 img_list = trainer.inference()
