@@ -114,7 +114,7 @@ print('load ckpt successfully')
 
 img_list = trainer.inference()
 print('inference successfully')
-ddpm.save_images(img_list, train_dir)
+trainer.save_images(img_list, train_dir)
 
 if args.use_qizhi or args.use_zhisuan:
     EnvToOpeni(train_dir,args.train_url)
