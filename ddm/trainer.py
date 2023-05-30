@@ -146,7 +146,7 @@ class Trainer(object):
         batches = num_to_groups(self.num_samples, self.batch_size)
         all_images_list = list(map(lambda n: self.ema.online_model.sample(batch_size=n), batches))
         all_images = np.concatenate(all_images_list, axis = 0)
-        to_image(all_images, str(self.results_folder + f'/sample-{accumulate_step}.png'), nrow = int(math.sqrt(self.num_samples)))
+        to_image(all_images, str(self.results_folder + f'/sample.png'), nrow = int(math.sqrt(self.num_samples)))
 
     def train(self):
         model = self.model
