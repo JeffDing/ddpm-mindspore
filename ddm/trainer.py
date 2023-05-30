@@ -145,7 +145,8 @@ class Trainer(object):
     def inference(self):
         batches = num_to_groups(self.num_samples, self.batch_size)
         all_images_list = list(map(lambda n: self.ema.online_model.sample(batch_size=n), batches))
-        return all_images_list
+        all_images = np.concatenate(all_images_list, axis = 0)
+        to_image(all_images, str(self.results_folder + f'/sample-{accumulate_step}.png'), nrow = int(math.sqrt(self.num_samples)))
 
     def train(self):
         model = self.model
@@ -244,6 +245,7 @@ class Trainer(object):
 
         print('training complete')
 
+'''
     def save_images(all_images_list, dtype, path):
         if not os.path.exists(path):
             os.mkdir(path)
@@ -255,3 +257,4 @@ class Trainer(object):
             im = Image.fromarray(image)
             save_path = os.path.join(path, f'{i}-img.png')
             im.save(save_path)
+''''
