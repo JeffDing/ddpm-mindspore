@@ -27,6 +27,8 @@ parser.add_argument('--image_size', default=512, type=int,
                     metavar='N', help='img size')
 parser.add_argument('--sampling_timesteps', default=250, type=int,
                     metavar='N', help='')
+parser.add_argument('--timesteps', default=200, type=int,
+                    metavar='N', help='')
 parser.add_argument('--train_num_steps', default=50001, type=int,
                     metavar='N', help='')
 parser.add_argument('--save_and_sample_every', default=2000, type=int,
@@ -83,7 +85,7 @@ model = Unet(
 diffusion = GaussianDiffusion(
     model,
     image_size=args.image_size,
-    timesteps=10,             # number of steps
+    timesteps=args.timesteps,             # number of steps
     # number of sampling timesteps (using ddim for faster inference [see citation for ddim paper])
     sampling_timesteps=args.sampling_timesteps,
     loss_type='l1'            # L1 or L2
