@@ -83,7 +83,7 @@ model = Unet(
 diffusion = GaussianDiffusion(
     model,
     image_size=args.image_size,
-    timesteps=1000,             # number of steps
+    timesteps=10,             # number of steps
     # number of sampling timesteps (using ddim for faster inference [see citation for ddim paper])
     sampling_timesteps=args.sampling_timesteps,
     loss_type='l1'            # L1 or L2
