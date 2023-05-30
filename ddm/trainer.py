@@ -244,7 +244,7 @@ class Trainer(object):
 
         print('training complete')
 
-    def save_images(all_images_list, path):
+    def save_images(all_images_list, dtype, path):
         if not os.path.exists(path):
             os.mkdir(path)
         for i, image in enumerate(all_images_list):
