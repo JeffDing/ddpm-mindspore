@@ -7,9 +7,11 @@ Implementation of [Denoising Diffusion Probabilistic Model](https://arxiv.org/ab
 
 数据集：hz.jpg 个人前阵子去杭州玩的时候用手机随拍的算是比较好的风景 
 
-地址[https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/datasets](https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/datasets)
+地址：
+[https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/datasets](https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/datasets)
 
-模型：[https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/modelmanage/model_filelist_tmpl?name=ddpm-mindspore_model_w39z](https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/modelmanage/model_filelist_tmpl?name=ddpm-mindspore_model_w39z)
+模型：
+[https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/modelmanage/model_filelist_tmpl?name=ddpm-mindspore_model_w39z](https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/modelmanage/model_filelist_tmpl?name=ddpm-mindspore_model_w39z)
 
 推理预计时间：21小时左右
 
