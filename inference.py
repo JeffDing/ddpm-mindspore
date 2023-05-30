@@ -27,7 +27,7 @@ parser.add_argument('--image_size', default=512, type=int,
                     metavar='N', help='img size')
 parser.add_argument('--sampling_timesteps', default=250, type=int,
                     metavar='N', help='')
-parser.add_argument('--timesteps', default=200, type=int,
+parser.add_argument('--timesteps', default=1000, type=int,
                     metavar='N', help='')
 parser.add_argument('--train_num_steps', default=50001, type=int,
                     metavar='N', help='')
