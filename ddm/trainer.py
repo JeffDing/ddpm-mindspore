@@ -257,4 +257,4 @@ class Trainer(object):
             im = Image.fromarray(image)
             save_path = os.path.join(path, f'{i}-img.png')
             im.save(save_path)
-''''
+'''
