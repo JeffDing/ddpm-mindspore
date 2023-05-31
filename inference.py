@@ -110,12 +110,15 @@ trainer = Trainer(
     ema_decay=0.995,                # exponential moving average decay
     amp_level='O1',                        # turn on mixed precision
     save_and_sample_every=args.save_and_sample_every,
-    num_samples=args.num_samples,
+    num_samples=int(args.num_samples),
     results_folder=os.path.join(train_dir, 'results'),
     train_url=train_dir
 )
 
-PretrainToEnv(args.pretrain_url, pretrain_dir)
+if args.use_qizhi:
+    PretrainToEnv(args.ckpt_url, pretrain_dir)
+else if args.use_zhisuan:
+    PretrainToEnv(args.pretrain_url, pretrain_dir)
 trainer.load(args.ckpt_path)
 print('load ckpt successfully')
 
