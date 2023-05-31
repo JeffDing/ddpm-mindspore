@@ -110,7 +110,7 @@ trainer = Trainer(
     ema_decay=0.995,                # exponential moving average decay
     amp_level='O1',                        # turn on mixed precision
     save_and_sample_every=args.save_and_sample_every,
-    num_samples=int(args.num_samples),
+    num_samples=args.num_samples,
     results_folder=os.path.join(train_dir, 'results'),
     train_url=train_dir
 )
