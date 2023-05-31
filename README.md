@@ -13,6 +13,9 @@ Implementation of [Denoising Diffusion Probabilistic Model](https://arxiv.org/ab
 模型：
 [https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/modelmanage/model_filelist_tmpl?name=ddpm-mindspore_model_w39z](https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/modelmanage/model_filelist_tmpl?name=ddpm-mindspore_model_w39z)
 
+### 推理参数
+![]('./pic/推理参数.png')
+
 推理预计时间：21小时左右
 
 推理结果图：
