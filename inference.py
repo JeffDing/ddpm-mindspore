@@ -115,9 +115,7 @@ trainer = Trainer(
     train_url=train_dir
 )
 
-if args.use_qizhi:
-    PretrainToEnv(args.ckpt_url, pretrain_dir)
-elif args.use_zhisuan:
+if args.use_qizhi or args.use_zhisuan:
     PretrainToEnv(args.pretrain_url, pretrain_dir)
 trainer.load(args.ckpt_path)
 print('load ckpt successfully')
