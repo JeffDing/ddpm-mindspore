@@ -36,6 +36,8 @@ parser.add_argument('--num_samples', default=25, type=int,
                     metavar='N', help='')   
 parser.add_argument('--gradient_accumulate_every', default=2, type=int,
                     metavar='N', help='')
+parser.add_argument('--ckpt_url', type=str, default=None,
+                    help='load ckpt file path')
 parser.add_argument('--ckpt_path', type=str, default=None,
                     help='load ckpt file path')
 parser.add_argument('--pretrain_url', type=str, default=None,
