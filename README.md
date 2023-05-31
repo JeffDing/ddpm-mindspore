@@ -5,12 +5,14 @@ Implementation of [Denoising Diffusion Probabilistic Model](https://arxiv.org/ab
 
 ## MindSpore AI画家大赛ReadMe部分
 
-数据集：hz.jpg 个人前阵子去杭州玩的时候用手机随拍的算是比较好的风景 
+### 数据集介绍
+hz.jpg 个人前阵子去杭州玩的时候用手机随拍的算是比较好的风景 
 
-地址：
+数据集地址：
 [https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/datasets](https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/datasets)
 
-模型：
+### 模型
+地址：
 [https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/modelmanage/model_filelist_tmpl?name=ddpm-mindspore_model_w39z](https://openi.pcl.ac.cn/JeffDing/ddpm-mindspore/modelmanage/model_filelist_tmpl?name=ddpm-mindspore_model_w39z)
 
 ### 推理参数
