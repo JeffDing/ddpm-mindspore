@@ -46,14 +46,14 @@ class Trainer(object):
         save_and_sample_every = 1000,
         #num_samples = 25,
         num_samples = 100,
+        pic_num = 200,
         results_folder = './results',
         amp_level = 'O1',
         dynamic_loss_scale = False,
         jit = True,
         akg = True,
         distributed = False,
-        train_url = None,
-        pic_num = 200
+        train_url = None
     ):
         super().__init__()
         self.train_url = train_url
