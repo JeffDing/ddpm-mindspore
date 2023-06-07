@@ -2,6 +2,7 @@ import os
 import math
 from tqdm import tqdm
 from pathlib import Path
+from PIL import Image
 import numpy as np
 import mindspore
 import random
@@ -258,6 +259,6 @@ class Trainer(object):
         print('training complete')
 
 
-    def save_images(self, all_images_list, milestone):
+    def save_images(self, all_images_list):
         image_folder = str(self.results_folder) 
         save_images(all_images_list, image_folder)
