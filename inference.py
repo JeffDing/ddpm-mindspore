@@ -124,6 +124,7 @@ trainer.load(args.ckpt_path)
 print('load ckpt successfully')
 
 img_list = trainer.inference()
+trainer.save_images(img_list, train_dir)
 print('inference successfully')
 
 if args.use_qizhi or args.use_zhisuan:
