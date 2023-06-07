@@ -235,7 +235,9 @@ class Trainer(object):
                         all_images_list = list(map(lambda n: self.ema.online_model.sample(batch_size=n), batches))
 
                         all_images = np.concatenate(all_images_list, axis = 0)
-                        to_image(all_images, str(self.results_folder + f'/sample-{accumulate_step}.png'), nrow = int(math.sqrt(self.num_samples)))
+                         for i in range(1,self.pic_num):
+                             to_image(all_images, str(self.results_folder + f'/sample'+i+'.png'), nrow = int(math.sqrt(self.num_samples)))
+  
 
                         # save ckpt(ema params)
                         self.save(accumulate_step)
