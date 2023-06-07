@@ -82,6 +82,7 @@ class Trainer(object):
 
         assert has_int_squareroot(num_samples), 'number of samples must have an integer square root'
         self.num_samples = num_samples
+        self.pic_num = pic_num
         self.save_and_sample_every = save_and_sample_every
 
         self.batch_size = train_batch_size
