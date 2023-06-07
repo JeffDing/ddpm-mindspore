@@ -259,5 +259,5 @@ class Trainer(object):
 
 
     def save_images(self, all_images_list, milestone):
-        image_folder = str(self.results_folder) + f'/image-{milestone}'
+        image_folder = str(self.results_folder) 
         save_images(all_images_list, image_folder)
