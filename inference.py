@@ -34,9 +34,7 @@ parser.add_argument('--train_num_steps', default=50001, type=int,
 parser.add_argument('--save_and_sample_every', default=2000, type=int,
                     metavar='N', help='')
 parser.add_argument('--num_samples', default=25, type=int,
-                    metavar='N', help='')    
-parser.add_argument('--pic_num', default=100, type=int,
-                    metavar='N', help='')                  
+                    metavar='N', help='')                 
 parser.add_argument('--gradient_accumulate_every', default=2, type=int,
                     metavar='N', help='')
 parser.add_argument('--ckpt_url', type=str, default=None,
@@ -114,7 +112,6 @@ trainer = Trainer(
     amp_level='O1',                        # turn on mixed precision
     save_and_sample_every=args.save_and_sample_every,
     num_samples=args.num_samples,
-    pic_num = args.pic_num,
     results_folder=os.path.join(train_dir, 'results'),
     train_url=train_dir
 )
