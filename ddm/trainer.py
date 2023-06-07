@@ -147,9 +147,7 @@ class Trainer(object):
     def inference(self):
         batches = num_to_groups(self.num_samples, self.batch_size)
         all_images_list = list(map(lambda n: self.ema.online_model.sample(batch_size=n), batches))
-        all_images = np.concatenate(all_images_list, axis = 0)
-        for i in range(1,self.pic_num):
-            to_image(all_images, str(self.results_folder + f'/sample-{i}.png'), nrow = int(math.sqrt(self.num_samples)))
+        return all_images_list
 
     def train(self):
         model = self.model
