@@ -46,7 +46,6 @@ class Trainer(object):
         save_and_sample_every = 1000,
         #num_samples = 25,
         num_samples = 100,
-        pic_num = 200,
         results_folder = './results',
         amp_level = 'O1',
         dynamic_loss_scale = False,
@@ -82,7 +81,6 @@ class Trainer(object):
 
         assert has_int_squareroot(num_samples), 'number of samples must have an integer square root'
         self.num_samples = num_samples
-        self.pic_num = pic_num
         self.save_and_sample_every = save_and_sample_every
 
         self.batch_size = train_batch_size
@@ -233,8 +231,7 @@ class Trainer(object):
                         all_images_list = list(map(lambda n: self.ema.online_model.sample(batch_size=n), batches))
 
                         all_images = np.concatenate(all_images_list, axis = 0)
-                        for i in range(1,self.pic_num):
-                            to_image(all_images, str(self.results_folder + f'/sample-{i}.png'), nrow = int(math.sqrt(self.num_samples)))
+                        to_image(all_images, str(self.results_folder + f'/sample.png'), nrow = int(math.sqrt(self.num_samples)))
   
 
                         # save ckpt(ema params)
