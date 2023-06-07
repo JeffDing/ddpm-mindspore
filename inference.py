@@ -124,7 +124,6 @@ trainer.load(args.ckpt_path)
 print('load ckpt successfully')
 
 img_list = trainer.inference()
-print(type(img_list))
 trainer.save_images(img_list, train_dir)
 print('inference successfully')
 
