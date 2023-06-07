@@ -66,6 +66,7 @@ if args.use_qizhi:
         os.makedirs(pretrain_dir)
     DatasetToEnv(args.multi_data_url,data_dir)
 
+
 if args.use_zhisuan:
     from openi import c2net_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
@@ -125,7 +126,7 @@ print('load ckpt successfully')
 
 img_list = trainer.inference()
 print(img_list)
-#trainer.save_images(img_list, train_dir)
+trainer.save_images(img_list, train_dir)
 print('inference successfully')
 
 if args.use_qizhi or args.use_zhisuan:
