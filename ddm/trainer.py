@@ -92,7 +92,6 @@ class Trainer(object):
             self.results_folder = Path(results_folder)
             self.results_folder.mkdir(exist_ok = True)
 
-        assert has_int_squareroot(num_samples), 'number of samples must have an integer square root'
         self.num_samples = num_samples
         self.save_and_sample_every = save_and_sample_every
 
@@ -166,6 +165,8 @@ class Trainer(object):
         grad_acc = self.gradient_accumulate_every
         self_condition = model.self_condition
         num_timesteps = model.num_timesteps
+        
+        assert has_int_squareroot(self.num_samples), 'number of samples must have an integer square root'
 
         # auto mixed precision
         from .amp import DynamicLossScaler, StaticLossScaler, NoLossScaler, auto_mixed_precision, all_finite
