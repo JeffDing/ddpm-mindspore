@@ -250,7 +250,7 @@ class Trainer(object):
 
         print('training complete')
 
-'''
+
     def save_images(all_images_list, dtype, path):
         if not os.path.exists(path):
             os.mkdir(path)
@@ -262,4 +262,3 @@ class Trainer(object):
             im = Image.fromarray(image)
             save_path = os.path.join(path, f'{i}-img.png')
             im.save(save_path)
-'''
