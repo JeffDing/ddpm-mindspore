@@ -39,7 +39,7 @@ def save_images(all_images_list, path):
         image = np.clip(image, 0, 255).astype(np.uint8)
         image = image.transpose((1, 2, 0))
         im = Image.fromarray(image)
-        save_path = os.path.join(path, f'{i}-img.png')
+        save_path = os.path.join(path, f'img-{i}.png')
         im.save(save_path)
 
 class Trainer(object):
