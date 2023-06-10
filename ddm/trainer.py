@@ -59,7 +59,7 @@ class Trainer(object):
         save_and_sample_every = 1000,
         #num_samples = 25,
         num_samples = 100,
-        results_folder = './results',
+        results_folder = '',
         amp_level = 'O1',
         dynamic_loss_scale = False,
         jit = True,
