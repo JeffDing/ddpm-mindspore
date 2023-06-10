@@ -113,7 +113,7 @@ trainer = Trainer(
     save_and_sample_every=args.save_and_sample_every,
     num_samples=args.num_samples,
     results_folder=os.path.join(train_dir, 'results'),
-    #train_url=train_dir
+    train_url=train_dir
 )
 
 if args.do_pretrain:
@@ -124,5 +124,5 @@ if args.do_pretrain:
 
 trainer.train()
 
-if args.use_qizhi or args.use_zhisuan:
+if args.use_qizhi:
     EnvToOpeni(train_dir,args.train_url)
