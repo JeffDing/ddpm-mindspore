@@ -125,5 +125,5 @@ img_list = trainer.inference()
 trainer.save_images(img_list)
 print('inference successfully')
 
-if args.use_qizhi or args.use_zhisuan:
+if args.use_qizhi:
     EnvToOpeni(train_dir,args.train_url)
