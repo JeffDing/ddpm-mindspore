@@ -113,7 +113,7 @@ trainer = Trainer(
     save_and_sample_every=args.save_and_sample_every,
     num_samples=args.num_samples,
     results_folder=os.path.join(train_dir, 'results'),
-    train_url=train_dir
+    #train_url=train_dir
 )
 
 if args.do_pretrain:
