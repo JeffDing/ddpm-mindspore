@@ -134,7 +134,7 @@ class Trainer(object):
         append_dict = self.opt.parameters_dict()
         append_dict['step'] = self.step
 
-        save_checkpoint(self.model, str(self.results_folder + f'/model-{milestone}.ckpt'),
+        save_checkpoint(self.model, str(self.train_url + f'/model-{milestone}.ckpt'),
                         append_dict=append_dict)
 
     def load(self, ckpt_file):
