@@ -13,7 +13,7 @@ from ddm import Unet, GaussianDiffusion, Trainer
 parser = argparse.ArgumentParser(description='train afhq dataset')
 parser.add_argument('--device_target', type=str, default="Ascend", choices=['Ascend', 'GPU', 'CPU'],
                     help='device where the code will be implemented (default: Ascend)')
-parser.add_argument('--local_data_root', default='/cache/data/',
+parser.add_argument('--local_data_root', default='/cache/data/hz/',
                     help='a directory used for transfer data between local path and OBS path')
 parser.add_argument('--data_url', metavar='DIR',
                     default='', help='path to dataset')
@@ -23,27 +23,27 @@ parser.add_argument('--multi_data_url',help='path to multi dataset',
                     default= '/cache/data/')
 parser.add_argument('-b', '--batch_size', default=2, type=int,
                     metavar='N', help='mini-batch size')
-parser.add_argument('--image_size', default=512, type=int,
+parser.add_argument('--image_size', default=256, type=int,
                     metavar='N', help='img size')
 parser.add_argument('--sampling_timesteps', default=250, type=int,
                     metavar='N', help='')
 parser.add_argument('--timesteps', default=1000, type=int,
                     metavar='N', help='')
-parser.add_argument('--train_num_steps', default=50001, type=int,
+parser.add_argument('--train_num_steps', default=101, type=int,
                     metavar='N', help='')
-parser.add_argument('--save_and_sample_every', default=2000, type=int,
+parser.add_argument('--save_and_sample_every', default=100, type=int,
                     metavar='N', help='')
-parser.add_argument('--num_samples', default=25, type=int,
+parser.add_argument('--num_samples', default=10, type=int,
                     metavar='N', help='')                 
 parser.add_argument('--gradient_accumulate_every', default=2, type=int,
                     metavar='N', help='')
 parser.add_argument('--ckpt_url', type=str, default=None,
                     help='load ckpt file path')
-parser.add_argument('--ckpt_path', type=str, default=None,
+parser.add_argument('--ckpt_path', type=str, default='/cache/pretrain/model-50000.ckpt',
                     help='load ckpt file path')
 parser.add_argument('--pretrain_url', type=str, default=None,
                     help='load ckpt file path')
-parser.add_argument('--use_qizhi', type=bool, default=False,
+parser.add_argument('--use_qizhi', type=bool, default=True,
                     help='use qizhi')
 parser.add_argument('--use_zhisuan', type=bool, default=False,
                     help='use zhisuan')
