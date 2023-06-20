@@ -43,9 +43,9 @@ parser.add_argument('--ckpt_path', type=str, default='/cache/pretrain/model-5000
                     help='load ckpt file path')
 parser.add_argument('--pretrain_url', type=str, default=None,
                     help='load ckpt file path')
-parser.add_argument('--use_qizhi', type=bool, default=True,
+parser.add_argument('--use_qizhi', type=bool, default=False,
                     help='use qizhi')
-parser.add_argument('--use_zhisuan', type=bool, default=False,
+parser.add_argument('--use_zhisuan', type=bool, default=True,
                     help='use zhisuan')
 args = parser.parse_args()
 
