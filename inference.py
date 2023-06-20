@@ -96,7 +96,7 @@ diffusion = GaussianDiffusion(
     loss_type='l1'            # L1 or L2
 )
 
-if args.use_qizhi == "False" and args.use_zhisuan == "False":
+if args.use_qizhi == False and args.use_zhisuan == False:
     train_dir=args.train_url
     if not os.path.exists(train_dir):
         os.makedirs(train_dir)
