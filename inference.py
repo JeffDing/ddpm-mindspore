@@ -49,7 +49,7 @@ parser.add_argument('--use_zhisuan', type=bool, default="False",
                     help='use zhisuan')
 args = parser.parse_args()
 
-if args.use_qizhi:
+if args.use_qizhi == "True":
     from openi import openi_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
     from openi import env_to_openi as EnvToOpeni
@@ -65,7 +65,7 @@ if args.use_qizhi:
     DatasetToEnv(args.multi_data_url,data_dir)
 
 
-if args.use_zhisuan:
+if args.use_zhisuan == "True":
     from openi import c2net_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
     from openi import env_to_openi as EnvToOpeni
@@ -96,7 +96,7 @@ diffusion = GaussianDiffusion(
     loss_type='l1'            # L1 or L2
 )
 
-if args.use_qizhi == False and args.use_zhisuan == False:
+if args.use_qizhi == "False" and args.use_zhisuan == "False":
     train_dir=args.train_url
     if not os.path.exists(train_dir):
         os.makedirs(train_dir)
