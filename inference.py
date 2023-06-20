@@ -49,7 +49,7 @@ parser.add_argument('--use_zhisuan', type=bool, default="False",
                     help='use zhisuan')
 args = parser.parse_args()
 
-if args.use_qizhi == "True":
+if args.use_qizhi:
     from openi import openi_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
     from openi import env_to_openi as EnvToOpeni
@@ -65,7 +65,7 @@ if args.use_qizhi == "True":
     DatasetToEnv(args.multi_data_url,data_dir)
 
 
-if args.use_zhisuan == "True":
+if args.use_zhisuan:
     from openi import c2net_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
     from openi import env_to_openi as EnvToOpeni
