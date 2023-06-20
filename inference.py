@@ -21,7 +21,7 @@ parser.add_argument('--train_url', metavar='DIR',
                     default='', help='save output')
 parser.add_argument('--multi_data_url',help='path to multi dataset',
                     default= '/cache/data/')
-parser.add_argument('-b', '--batch_size', default=2, type=int,
+parser.add_argument('-b', '--batch_size', default=1, type=int,
                     metavar='N', help='mini-batch size')
 parser.add_argument('--image_size', default=256, type=int,
                     metavar='N', help='img size')
