@@ -43,13 +43,13 @@ parser.add_argument('--ckpt_path', type=str, default='/cache/pretrain/model-5000
                     help='load ckpt file path')
 parser.add_argument('--pretrain_url', type=str, default=None,
                     help='load ckpt file path')
-parser.add_argument('--use_qizhi', type=bool, default="True",
+parser.add_argument('--use_qizhi', type=bool, default=True,
                     help='use qizhi')
-parser.add_argument('--use_zhisuan', type=bool, default="False",
+parser.add_argument('--use_zhisuan', type=bool, default=False,
                     help='use zhisuan')
 args = parser.parse_args()
 
-if args.use_qizhi == "True":
+if args.use_qizhi:
     from openi import openi_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
     from openi import env_to_openi as EnvToOpeni
@@ -65,7 +65,7 @@ if args.use_qizhi == "True":
     DatasetToEnv(args.multi_data_url,data_dir)
 
 
-if args.use_zhisuan == "True":
+if args.use_zhisuan:
     from openi import c2net_multidataset_to_env as DatasetToEnv  
     from openi import pretrain_to_env as PretrainToEnv
     from openi import env_to_openi as EnvToOpeni
