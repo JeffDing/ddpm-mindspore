@@ -137,7 +137,7 @@ class Trainer(object):
         save_checkpoint(self.model, str(self.train_url + f'/model-{milestone}.ckpt'),
                         append_dict=append_dict)
         
-        mindspore.export(self.model, self.ds, file_name=str(self.train_url + f'/model-{milestone}.onnx', file_format='ONNX')
+        mindspore.export(self.model, self.ds, file_name=str(self.train_url + f'/model-{milestone}.onnx', file_format='ONNX'))
 
     def load(self, ckpt_file):
         param_dict = load_checkpoint(ckpt_file)
