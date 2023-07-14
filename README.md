@@ -4,12 +4,6 @@
 Implementation of [Denoising Diffusion Probabilistic Model](https://arxiv.org/abs/2006.11239) in MindSpore. The implementation refers to lucidrains's [denoising-diffusion-pytorch](https://github.com/lucidrains/denoising-diffusion-pytorch).
 
 
-## 修改部分
-本项目是使用以下这位大佬的mindspore代码以及zyf-ai大佬的代码修改而成
-原始代码仓链接：https://github.com/lvyufeng/denoising-diffusion-mindspore
-增加了通过超参适配启智的训练作业环境及非启智环境
-
-
 ## Usage
 
 ```python
